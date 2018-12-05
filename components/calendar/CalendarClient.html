@@ -1,0 +1,522 @@
+<!DOCTYPE f8component>
+
+<definition>
+{
+   id:"calendar",
+   label:"Calendar",
+   className:"CalendarServer",
+   renderable:"true"
+}
+</definition>
+
+<attributes>
+[
+  {
+     name:"bucket",
+     label:"Bucket",
+     type:"choice",
+     attributes:{
+        "choice_type":"dropdown",
+        "buckets":"true"
+     }
+  },
+  {
+     name:"condition",
+     label:"Condition",
+     type:"condition",
+     attributes:{
+        bucket_slot:"bucket"
+     }
+  },
+  {
+     name:"start_slot",
+     label:"Start slot",
+     type:"choice",
+     attributes:{
+        choice_type:"dropdown",
+        slots:true,
+        filter:"type:eq:date_time",
+        bucket_slot:"bucket"
+     }
+  },
+  {
+     name:"end_slot",
+     label:"End slot",
+     type:"choice",
+     attributes:{
+        choice_type:"dropdown",
+        slots:true,
+        bucket_slot:"bucket"
+     }
+  },
+  {
+     name:"title_slot",
+     label:"Title slot",
+     type:"choice",
+     attributes:{
+        choice_type:"dropdown",
+        slots:true,
+        bucket_slot:"bucket"
+     }
+  },
+  {
+     name:"resource_slot",
+     label:"Resource slot",
+     type:"choice",
+     attributes:{
+        choice_type:"dropdown",
+        slots:true,
+        bucket_slot:"bucket",
+        none_option: "true"
+     }
+  },
+  {
+     name:"initial_view",
+     label:"Initial view",
+     type:"choice",
+     attributes:{
+        default:"month",
+        choice_type:"dropdown",
+        choices:[
+           {
+              label:"Month",
+              value:"month"
+           },
+           {
+              label:"Week",
+              value:"agendaWeek"
+           },
+           {
+              label:"Day",
+              value:"agendaDay"
+           }
+        ]
+     }
+  },
+  {
+     name:"show_unscheduled_events",
+     label:"Show unscheduled events",
+     type:"boolean"
+  },
+   {
+     name:"unscheduled_event_condition",
+     label:"Unscheduled events condition",
+     type:"condition",
+     attributes:{
+        bucket_slot:"bucket"
+     }
+  }
+]
+</attributes>
+
+<attributes_display_rules>
+[
+		{"slot": "unscheduled_event_condition",
+		"conditions": {
+			"hidden": '["show_unscheduled_events","eq","false"]'
+		}
+	}
+]
+
+</attributes_display_rules>
+
+<style>
+#wrap {
+	width: 100%;
+	margin: 0 auto;
+}
+
+#external-events {
+	float: left;
+	width: 13%;
+	padding: 0 10px;
+	border: 1px solid #ccc;
+	background: #eee;
+	text-align: left;
+}
+	
+#external-events h4 {
+	font-size: 16px;
+	margin-top: 0;
+	padding-top: 1em;
+}
+	
+#external-events .fc-event {
+	margin: 10px 0;
+	cursor: pointer;
+}
+	
+#external-events p {
+	margin: 1.5em 0;
+	font-size: 11px;
+	color: #666;
+}
+	
+#external-events p input {
+	margin: 0;
+	vertical-align: middle;
+}
+.calendar {
+	float: right;
+	width: 100%;
+	height: 90%;
+}
+
+.fc button {
+    display: block;
+}
+
+
+
+</style>
+
+<script>
+	exports.component = ComponentUI.create({
+		onLoad: function(data) {
+			var container = this.container;
+			var attributes = this.attributes;
+			var w = container.width();
+			var h = container.height() || 400;
+			//Wrapper div for everything
+			var wrapDiv = $("<div id='wrap'>");
+			container.append(wrapDiv);
+			console.log("Link_URL " + data.data.link_url);
+			//External events div
+			if (Object.isTrue(attributes.show_unscheduled_events)) {
+				var externalEventDiv = $('<div id="external-events"></div>');
+				wrapDiv.append(externalEventDiv);
+				var title = $("<h4>Unscheduled</h4>");
+				externalEventDiv.append(title);
+				
+				//Iterate through the unscheduled events			
+				for (var eventNdx = 0; eventNdx < data.data.unscheduled_events.length; eventNdx++) {
+					var event = data.data.unscheduled_events[eventNdx];
+					console.log('UNSCHEDULED EVENT: ' + JSON.stringify(event));
+					var eventDiv = $("<div id=" + event.id + " class='fc-event ui-draggable ui-draggable-handle'>" + event.title + "</div>")
+					externalEventDiv.append(eventDiv);
+				} 
+			}
+			
+			//Calendar div
+			this.id = 'uniqueCalendarID' //+ Client.guid();
+			wrapDiv.append('<div id="' + this.id + '" class="calendar f8-fc"></div>');
+			//wrapDiv.append('<div style='clear:both'></div>');
+			this.bucketName = attributes.bucket;
+			console.log('this.bucketName: ' + this.bucketName);
+			this.startSlot = attributes.start_slot;
+			this.endSlot = attributes.end_slot;
+			this.titleSlot = attributes.title_slot;
+			this.allowOverlap = "true";
+			if (!Object.isTrue(attributes.allow_overlap)) {
+				this.allowOverlap = "false";
+			}
+		},
+
+		onAfterLoad: function(data) {
+			var self = this;
+			$('#external-events .fc-event').each(function() {
+
+				// store data so the calendar knows to render an event upon drop
+				$(this).data('event', {
+					title: $.trim($(this).text()), // use the element's text as the event title
+					//id: $(this).attr('id'),
+					stick: true // maintain when user navigates (see docs on the renderEvent method)
+				});
+
+				// make the event draggable using jQuery UI
+				$(this).draggable({
+					zIndex: 999,
+					revert: true,      // will cause the event to go back to its
+					revertDuration: 0  //  original position after the drag
+				});
+
+            });
+
+			var calendar = $('#' + this.id).fullCalendar({
+                eventClick: function(calEvent, jsEvent, view) {
+					window.location = data.data.link_url;
+					
+					//alert(window.location.search);
+					//window.location = url
+					//console.log(JSON.stringify(calEvent));
+                   // alert('Event: ' + data.data.link_url);
+					
+                    //alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+                    //alert('View: ' + view.name);
+
+                    // change the border color just for fun
+                    $(this).css('border-color', 'red');
+
+                },
+				/*
+				schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+			    defaultView: 'agendaFiveDay',
+			    header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'agendaDay,agendaTwoDay,agendaFiveDay,agendaWeek,month'
+				},
+				allDaySlot: true,
+				//defaultView: data.data.initial_view,
+				views: {
+					agendaTwoDay: {
+						type: 'agenda',
+						duration: { days: 2 },
+	
+						// views that are more than a day will NOT do this behavior by default
+						// so, we need to explicitly enable it
+						groupByResource: true
+	
+						//// uncomment this line to group by day FIRST with resources underneath
+						//groupByDateAndResource: true
+					},
+					agendaFiveDay: {
+						type: 'agenda',
+						duration: { days: 5 },
+	
+						// views that are more than a day will NOT do this behavior by default
+						// so, we need to explicitly enable it
+						groupByResource: true
+	
+						//// uncomment this line to group by day FIRST with resources underneath
+						//groupByDateAndResource: true
+					}
+				},
+			    
+			    timezone: "local",
+			    editable: "true", // enable draggable events
+				droppable: "true", // this allows things to be dropped onto the calendar
+			    //eventLimit: true,
+			    selectable: "true",
+			    selectHelper: "true",
+			    
+
+				
+				
+				select: function(start, end, jsEvent, view, resource) {
+					console.log(
+						'select',
+						start.format(),
+						end.format(),
+						resource ? resource.id : '(no resource)'
+					);
+				},
+				
+				dayClick: function(date, jsEvent, view, resource) {
+					console.log(
+						'dayClick',
+						date.format(),
+						resource ? resource.id : '(no resource)'
+					);
+				},
+			    
+				
+			    
+				
+				//defaultView: 'timelineDay',
+				//events: data.data.events,
+				//resources: data.data.resources,
+			    resources: [
+					{ id: 'a', title: 'Bay A' },
+					{ id: 'b', title: 'Bay B', eventColor: 'green' },
+					{ id: 'c', title: 'Bay C', eventColor: 'orange' },
+					{ id: 'd', title: 'Bay D', eventColor: 'red' }
+				],
+				events: [
+					{ id: '1', resourceId: 'a', start: '2016-04-24', end: '2016-04-25', title: 'event 1' },
+					{ id: '2', resourceId: 'a', start: '2016-01-07T09:00:00', end: '2016-01-07T14:00:00', title: 'event 2' },
+					{ id: '3', resourceId: 'b', start: '2016-01-07T12:00:00', end: '2016-01-08T06:00:00', title: 'event 3' },
+					{ id: '4', resourceId: 'c', start: '2016-01-07T07:30:00', end: '2016-01-07T09:30:00', title: 'event 4' },
+					{ id: '5', resourceId: 'd', start: '2016-01-07T10:00:00', end: '2016-01-07T15:00:00', title: 'event 5' }
+				]
+			    */
+                select: function(start, end) {
+                    alert('SELECTED');
+                    var title = '';
+                    title = prompt('Event Title:', "New Event");
+                    var eventData;
+                    if (title) {
+                        eventData = {
+                            title: title,
+                            start: start,
+                            end: end
+                        };
+                        //$('#' + this.id).fullCalendar('renderEvent', eventData, false); // stick? = true
+                    }
+                    //$('#' + this.id).fullCalendar('unselect');
+
+                    self._createEvent(eventData.title, eventData.start, eventData.end);
+                },
+			    
+				//schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+			    //defaultView: 'agendaFiveDay',
+				defaultView: data.data.initial_view,
+			    allDaySlot: true,
+				//defaultDate: '2016-01-07',
+				eventOverlap: true,
+				editable: true,
+				droppable: true,
+				dropAccept: '.fc-event',
+				selectable: true,
+				//aspectRatio: 1.8,
+                themeSystem: "bootstrap3",
+				nowIndicator: true,
+				//weekends: this.showWeekends,
+				eventLimit: true, // allow "more" link when too many events
+                /*
+				header: {
+					left: 'prev,next today',
+					center: 'title',
+					right: 'agendaDay,agendaTwoDay,agendaFiveDay,agendaWeek,month'
+				},
+				*/
+
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,basicWeek,basicDay'
+                },
+
+				views: {
+					agendaTwoDay: {
+						type: 'agenda',
+						duration: { days: 2 },
+
+						// views that are more than a day will NOT do this behavior by default
+						// so, we need to explicitly enable it
+						groupByResource: true
+
+						//// uncomment this line to group by day FIRST with resources underneath
+						//groupByDateAndResource: true
+					},
+					agendaFiveDay: {
+						type: 'agenda',
+						duration: { days: 5 },
+
+						// views that are more than a day will NOT do this behavior by default
+						// so, we need to explicitly enable it
+						groupByResource: true
+
+						//// uncomment this line to group by day FIRST with resources underneath
+						//groupByDateAndResource: true
+					}
+				},
+
+				//// uncomment this line to hide the all-day slot
+				//allDaySlot: false,
+				events: data.data.events,
+				//resources: data.data.resources,
+
+				select: function(start, end, jsEvent, view, resource) {
+					console.log(
+						'select',
+						start.format(),
+						end.format(),
+						resource ? resource.id : '(no resource)'
+					);
+				},
+				dayClick: function(date, jsEvent, view, resource) {
+					console.log(
+						'dayClick',
+						date.format(),
+						resource ? resource.id : '(no resource)'
+					);
+				},
+				drop: function(date, jsEvent, ui, resourceId) {
+                    alert('DROPPED');
+					console.log('drop', date.format(), resourceId);
+
+					// is the "remove after drop" checkbox checked?
+					//if ($('#drop-remove').is(':checked')) {
+						// if so, remove the element from the "Draggable Events" list
+						$(this).remove();
+					//}
+				},
+				
+				//External event was dropped onto calendar
+				eventReceive: function(event) {
+					//console.log('eventReceive', event);
+					//alert(event.title + " - " + event.id + " was just dropped from " + event.start + ' - ' + event.end);
+				
+					self._modifyEvent(event.id, event.start, event.end);
+				},
+				
+				//Event was resized
+				eventResize: function(event, delta, revertFunc) {
+			        //alert(event.title + " - " + event.id + " end is now " + event.end);
+			        //alert('Delta was ' + delta);
+
+			        if (!confirm("Are you sure you want to change the duration of this event?")) {
+			            revertFunc();
+			        }
+			        
+			        self._modifyEvent(event.id, event.start, event.end);
+			    },
+			    
+			    //Event was moved
+			    eventDrop: function(event, delta, revertFunc) {
+			        if (!confirm("Are you sure you want to move this event?")) {
+			            revertFunc();
+			        }
+			        
+			        self._modifyEvent(event.id, event.start, event.end);
+			    }
+
+			});
+
+		},
+		
+		_modifyEvent: function(id, startMS, endMS) {
+			//Convert to strings so the server can deal with the millisecond values
+			var startMSString = startMS + '';
+			var endMSString = endMS + '';
+			Server.rest('calendar/ajax/modifyEvent', {
+				id: id,
+				startMS: startMSString,
+				endMS: endMSString,
+				bucket: this.bucketName,
+				startSlot: this.startSlot,
+				endSlot: this.endSlot
+				}, {
+					callback: $.proxy(this.modificationDone, this)
+				}
+			);
+		},
+		
+		_createEvent: function(title, startMS, endMS) {
+			//Convert to strings so the server can deal with the millisecond values
+			var startMSString = startMS + '';
+			var endMSString = endMS + '';
+			Server.rest('calendar/ajax/createEvent', {
+				title: title,
+				startMS: startMSString,
+				endMS: endMSString,
+				bucket: this.bucketName,
+				startSlot: this.startSlot,
+				endSlot: this.endSlot,
+				titleSlot: this.titleSlot
+				}, {
+					callback: $.proxy(this.modificationDone, this)
+				}
+			);
+		},
+		
+		modificationDone: function(response) {
+			if (response.status == 'bad') {
+				Client.error("Unable to modify record");
+				return;
+			}
+			
+			var returnObject = response.data.returnObject;
+			
+			if (!returnObject) {
+				alert('No returnObject found');
+				return;
+			}
+
+			this.reload();
+		},
+
+		className: "CalendarClient"
+	});
+</script>
