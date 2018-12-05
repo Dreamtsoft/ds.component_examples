@@ -1,0 +1,102 @@
+{
+  "bucket_data": {
+    "pages": {
+      "9a793ebc8a3b4ab4a136eae0652cd309": {
+        "created": "1544035625207",
+        "id": "9a793ebc8a3b4ab4a136eae0652cd309",
+        "layout": {
+          "__start__": {
+            "contains": [
+              "component_f02816f34f22b4078f7185909376a27b"
+            ],
+            "h": "100%",
+            "id": "__start__",
+            "layout_type": "page_components",
+            "type": "container",
+            "w": "100%"
+          },
+          "component_f02816f34f22b4078f7185909376a27b": {
+            "attributes": {
+              "component": "work_board",
+              "csstags": "",
+              "id": "0a7b71fe49ab0a6fa8cb2b4b24e6ef01"
+            },
+            "component": "work_board",
+            "h": "100%",
+            "id": "component_f02816f34f22b4078f7185909376a27b",
+            "name": "component_f02816f34f22b4078f7185909376a27b",
+            "needs_subpage_target": false,
+            "page_loading": false,
+            "type": "component",
+            "w": "100%"
+          }
+        },
+        "meta_classification": "",
+        "meta_schema": "",
+        "name": "work_board",
+        "owner": "__SYSTEM_USER__",
+        "page_vars": {
+          "layout": {
+            "layout": [
+              {
+                "colData": [ ],
+                "cols": [
+                  [
+                    {
+                      "name": "q",
+                      "type": "slot"
+                    },
+                    {
+                      "name": "bucket",
+                      "type": "slot"
+                    },
+                    {
+                      "name": "id",
+                      "type": "slot"
+                    }
+                  ]
+                ],
+                "type": "section"
+              }
+            ],
+            "version": 1
+          },
+          "slots": {
+            "bucket": {
+              "attributes": { },
+              "labels": {
+                "label": "Bucket",
+                "labelp": "Buckets"
+              },
+              "name": "bucket",
+              "type": "string"
+            },
+            "id": {
+              "attributes": { },
+              "labels": {
+                "label": "Id",
+                "labelp": "Ids"
+              },
+              "name": "id",
+              "type": "string"
+            },
+            "q": {
+              "attributes": { },
+              "labels": {
+                "label": "Query",
+                "labelp": "Queries"
+              },
+              "name": "q",
+              "type": "string"
+            }
+          }
+        },
+        "public": "0",
+        "relationships": "",
+        "schema_version": "0",
+        "system_updated": "0",
+        "title": ""
+      }
+    }
+  }
+}

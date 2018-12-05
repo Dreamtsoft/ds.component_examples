@@ -1,0 +1,216 @@
+<!DOCTYPE f8component>
+
+<definition> { id:"work_board", label:"Work Board",
+	className:"WorkBoardServer", renderable:"true" } </definition>
+
+<attributes> [] </attributes>
+
+<attributes_layout> [] </attributes_layout>
+
+<attributes_display_rules> [] </attributes_display_rules>
+
+<style>
+
+	body{font-family: "Lato"; margin:0; padding: 0;}
+	#myKanban{overflow-x: auto; padding:20px 0;}
+
+	.success{background: #00B961; color:#fff}
+	.info{background: #2A92BF; color:#fff}
+	.warning{background: #F4CE46; color:#fff}
+	.error{background: #FB7D44; color:#fff}
+
+</style>
+
+<script>
+	exports.component = ComponentUI.create({
+		onRender : function(container, data, attributes) {
+			console.log(JSON.stringify(data));
+			var w = container.width();
+			var h = container.height() || 400;
+			this.id = 'uniqueKanbanBoardID' + Client.guid();
+			var primaryDiv = $('<div style="overflow-x: auto; padding:20px 0;" id="' + this.id + '"></div>');
+
+			container.append(primaryDiv);
+
+
+
+			var KanbanTest = new jKanban({
+				element: '#' + this.id,
+				gutter: '10px',
+				click: function (el) {
+					console.log("Trigger on all items click!");
+				},
+				dropEl: function (el, target, source, sibling) {
+					console.log('DROPPED: ' + el.dataset.eid);
+					console.log('DROPPED 2: ' + $(el).data("eid"));
+					console.log('TARGET: ' + $(target.parentElement).data("id"));
+					console.log('SOURCE: ' + $(source.parentElement).data("id"));
+					console.log('SIBLING: ' + $(sibling.parentElement).data("id"));
+					console.log('BOARD: ' + $(el.parentElement.parentElement).data("id"))
+				},
+				buttonClick: function (el, boardId) {
+					console.log(el);
+					console.log(boardId);
+					// create a form to enter element
+					var formItem = document.createElement('form');
+					formItem.setAttribute("class", "itemform");
+					formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>'
+					KanbanTest.addForm(boardId, formItem);
+					formItem.addEventListener("submit", function (e) {
+						e.preventDefault();
+						var text = e.target[0].value
+						KanbanTest.addElement(boardId, {
+							"title": text,
+						})
+						formItem.parentNode.removeChild(formItem);
+					});
+					document.getElementById('CancelBtn').onclick = function () {
+						formItem.parentNode.removeChild(formItem)
+					}
+				},
+
+				addItemButton: true,
+				dragBoards: true,
+				//boards: data.boards,
+				
+                boards: [
+                   {
+                        "id": "_todo",
+                        "title": "To Do",
+                        "class": "info,good",
+                        "dragTo": ['_working'],
+                        "item": [
+                            {
+                                "id": "_test_delete",
+                                "title": "Try drag this (Look the console)",
+                                "drag": function (el, source) {
+                                    console.log("START DRAG: " + el.dataset.eid);
+                                },
+                                "dragend": function (el) {
+                                    console.log("END DRAG: " + el.dataset.eid);
+                                },
+                                "drop": function(el, target, source, sibling){
+                                    console.log('DROPPED: ' + el.dataset.eid );
+                                    console.log(target);
+                                    console.log('SOURCE: ' + source);
+                                    console.log('SIBLING: ' + sibling);
+                                }
+                            },
+                            {
+                                "title": "Try Click This!",
+                                "click": function (el) {
+                                    alert("click");
+                                },
+                            }
+                        ]
+                    },
+                    {
+                        "id": "_working",
+                        "title": "Working",
+                        "class": "warning",
+                        "item": [
+                            {
+                                "title": "Do Something!",
+                            },
+                            {
+                                "title": "Run?",
+                            }
+                        ]
+                    },
+                    {
+                        "id": "_done",
+                        "title": "Done",
+                        "class": "success",
+                        "dragTo": ['_working'],
+                        "item": [
+                            {
+                                "title": "All right",
+                            },
+                            {
+                                "title": "Ok!",
+                            }
+                        ]
+                    }
+                ]
+
+                
+			});
+
+
+
+
+			/*
+            var KanbanTest = new jKanban({
+                element : '#' + this.id,
+                gutter  : '10px',
+                click : function(el){
+                    alert(el.innerHTML);
+                    alert(el.dataset.eid)
+                },
+                boards  :[
+                    {
+                        'id' : '_todo',
+                        'title'  : 'To Do (drag me)',
+                        'class' : 'info',
+                        'item'  : [
+                            {
+                                'id':'task-1',
+                                'title':'Try drag me',
+                            },
+                            {
+                                'id':'task-2',
+                                'title':'Click me!!',
+                            }
+                        ]
+                    },
+                    {
+                        'id' : '_working',
+                        'title'  : 'Working',
+                        'class' : 'warning',
+                        'item'  : [
+                            {
+                                'title':'Do Something!',
+                            },
+                            {
+                                'title':'Run?',
+                            }
+                        ]
+                    },
+                    {
+                        'id' : '_done',
+                        'dragTo' : ['_working'],
+                        'title'  : 'Done (Drag only in Working)',
+                        'class' : 'success',
+                        'item'  : [
+                            {
+                                'title':'All right',
+                            },
+                            {
+                                'title':'Ok!',
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            */
+
+			/*var allEle = KanbanTest.getBoardElements('_todo');
+			allEle.forEach(function (item, index) {
+				console.log("ITEM: " + item);
+				console.log('BOARD: ' + $(item.parentElement.parentElement).data("id")); // board id)
+				console.log("INDEX: " + index);
+			})*/
+
+
+
+
+		},
+
+		onUnloaded : function() {
+
+		},
+
+		className : "WorkBoardClient"
+	});
+</script>
