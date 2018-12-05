@@ -1,4 +1,5 @@
 {
+   "autoload": [ ],
    "bundle_name": "component_examples",
    "dependencies": [
       {
@@ -6,8 +7,8 @@
          "version": "0.1.0"
       }
    ],
-   "icon": "fontawesome:connectdevelop",
-   "icon_color": "#999999",
+   "icon": "fontawesome:puzzle-piece",
+   "icon_color": "#90714c",
    "id": "ds.component_examples",
    "page_banner": "",
    "parametrics_form": "",
