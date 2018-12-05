@@ -180,7 +180,8 @@
 			//Wrapper div for everything
 			var wrapDiv = $("<div id='wrap'>");
 			container.append(wrapDiv);
-			console.log("Link_URL " + data.data.link_url);
+			//console.log("Link_URL " + data.data.link_url);
+
 			//External events div
 			if (Object.isTrue(attributes.show_unscheduled_events)) {
 				var externalEventDiv = $('<div id="external-events"></div>');
@@ -196,9 +197,10 @@
 					externalEventDiv.append(eventDiv);
 				} 
 			}
+
 			
 			//Calendar div
-			this.id = 'uniqueCalendarID' //+ Client.guid();
+			this.id = 'uniqueCalendarID' + Client.guid();
 			wrapDiv.append('<div id="' + this.id + '" class="calendar f8-fc"></div>');
 			//wrapDiv.append('<div style='clear:both'></div>');
 			this.bucketName = attributes.bucket;
@@ -214,6 +216,7 @@
 
 		onAfterLoad: function(data) {
 			var self = this;
+
 			$('#external-events .fc-event').each(function() {
 
 				// store data so the calendar knows to render an event upon drop
@@ -232,9 +235,10 @@
 
             });
 
+
 			var calendar = $('#' + this.id).fullCalendar({
                 eventClick: function(calEvent, jsEvent, view) {
-					window.location = data.data.link_url;
+					//window.location = data.data.link_url;
 					
 					//alert(window.location.search);
 					//window.location = url
@@ -374,7 +378,7 @@
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'month,basicWeek,basicDay'
+                    right: 'month,agendaWeek,agendaFiveDay,agendaTwoDay,agendaDay'
                 },
 
 				views: {
@@ -463,6 +467,9 @@
 			    }
 
 			});
+
+			//console.log('Rendering');
+            //$('#' + this.id).fullCalendar('render');
 
 		},
 		

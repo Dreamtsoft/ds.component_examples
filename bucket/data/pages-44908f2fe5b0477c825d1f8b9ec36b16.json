@@ -19,9 +19,10 @@
             "attributes": {
               "bucket": "mvy9xvby",
               "component": "calendar",
-              "condition": "[]",
+              "condition": "[[\"planned_start_date\",\"ne\",\"\"]]",
               "csstags": "",
               "end_slot": "planned_end_date",
+              "id": "b939eecf1ddd4b6c5c3d83cabd17686e",
               "initial_view": "month",
               "resource_slot": "",
               "show_unscheduled_events": "0",

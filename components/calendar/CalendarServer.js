@@ -5,8 +5,8 @@
 var CalendarServer = ServerComponent.create({
 	data: function(attributes, vars) {
 		//Set variables
-		console.log("DRS URL " + Configuration.getSiteURL() + "/ds.crm/home/details.default.sales_activity?q=%5b\"id\",\"eq\",\"" + "6b43d5f5a978496dabafc5097f14f94e\"");
-		var url = (Configuration.getSiteURL() + "/ds.crm/home/details.default.sales_activity?q=%5b\"id\",\"eq\",\"" + "6b43d5f5a978496dabafc5097f14f94e\"");
+		//console.log("DRS URL " + Configuration.getSiteURL() + "/ds.crm/home/details.default.sales_activity?q=%5b\"id\",\"eq\",\"" + "6b43d5f5a978496dabafc5097f14f94e\"");
+		//var url = (Configuration.getSiteURL() + "/ds.crm/home/details.default.sales_activity?q=%5b\"id\",\"eq\",\"" + "6b43d5f5a978496dabafc5097f14f94e\"");
 		var bucketName = attributes.bucket;
 		var startSlot = attributes.start_slot;
 		var endSlot = attributes.end_slot;
@@ -35,7 +35,7 @@ var CalendarServer = ServerComponent.create({
 		}
 		eventRecord.search();
 		while (eventRecord.next()) {
-			console.log('eventRecord: ' + eventRecord.getRecordDisplayValue());
+			//console.log('eventRecord: ' + eventRecord.getRecordDisplayValue());
 			//Create the object for this event
 			var eventObject = {};
 			var startDateMS = parseInt(eventRecord[startSlot]);
@@ -45,9 +45,10 @@ var CalendarServer = ServerComponent.create({
             var id = eventRecord.id;
 			
 			//Make sure you have an appropriate start and end date
-			console.log(title);
-			console.log('START DATE - ' + startDateMS);
-			console.log('END DATE - ' + endDateMS);
+			//console.log(title);
+			//console.log('START DATE - ' + startDateMS);
+			//console.log('END DATE - ' + endDateMS);
+			//console.log('END DATE - ' + endDateMS);
 			if (startDateMS > 0 && endDateMS > 0) {
 				console.log('SOLID');
 				eventObject.title = title;
@@ -125,7 +126,6 @@ var CalendarServer = ServerComponent.create({
 				unscheduled_events: unscheduledEventArray,
 				resources: resourceArray,
 				initial_view: initialView,
-				link_url: url
 			 }	
 		});
 	},
