@@ -1,0 +1,17 @@
+{
+  "bucket_data": {
+    "navigator": {
+      "7535a9d1bc7c4b3cb296628be4f611de": {
+        "created": "1544033980597",
+        "id": "7535a9d1bc7c4b3cb296628be4f611de",
+        "meta_classification": "",
+        "meta_schema": "",
+        "name": "",
+        "owner": "__SYSTEM_USER__",
+        "relationships": "",
+        "schema_version": "0",
+        "system_updated": "0"
+      }
+    }
+  }
+}

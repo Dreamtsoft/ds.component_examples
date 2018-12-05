@@ -1,0 +1,22 @@
+{
+  "bucket_data": {
+    "navigator_item_url": {
+      "56825521efae4e8793c3c53a1e1b819a": {
+        "color": "",
+        "created": "1544033980784",
+        "icon": "",
+        "id": "56825521efae4e8793c3c53a1e1b819a",
+        "label": "Calendar",
+        "meta_classification": "",
+        "meta_schema": "",
+        "order": "0",
+        "owner": "__SYSTEM_USER__",
+        "parent": "7535a9d1bc7c4b3cb296628be4f611de",
+        "relationships": "",
+        "schema_version": "0",
+        "system_updated": "0",
+        "url": "calendar"
+      }
+    }
+  }
+}
