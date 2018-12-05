@@ -27,16 +27,17 @@
 			console.log(JSON.stringify(data));
 			var w = container.width();
 			var h = container.height() || 400;
-			this.id = 'uniqueKanbanBoardID' + Client.guid();
+			this.id = 'uniqueWorkBoardID' + Client.guid();
 			var primaryDiv = $('<div style="overflow-x: auto; padding:20px 0;" id="' + this.id + '"></div>');
 
 			container.append(primaryDiv);
 
 
 
-			var KanbanTest = new jKanban({
+			var WorkBoard = new jKanban({
 				element: '#' + this.id,
 				gutter: '10px',
+				/*
 				click: function (el) {
 					console.log("Trigger on all items click!");
 				},
@@ -55,11 +56,11 @@
 					var formItem = document.createElement('form');
 					formItem.setAttribute("class", "itemform");
 					formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs pull-right">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>'
-					KanbanTest.addForm(boardId, formItem);
+					WorkBoard.addForm(boardId, formItem);
 					formItem.addEventListener("submit", function (e) {
 						e.preventDefault();
 						var text = e.target[0].value
-						KanbanTest.addElement(boardId, {
+                        WorkBoard.addElement(boardId, {
 							"title": text,
 						})
 						formItem.parentNode.removeChild(formItem);
@@ -72,13 +73,14 @@
 				addItemButton: true,
 				dragBoards: true,
 				//boards: data.boards,
-				
+				*/
+
                 boards: [
                    {
                         "id": "_todo",
                         "title": "To Do",
                         "class": "info,good",
-                        "dragTo": ['_working'],
+                        //"dragTo": ['_working'],
                         "item": [
                             {
                                 "id": "_test_delete",
@@ -133,78 +135,8 @@
                     }
                 ]
 
-                
+
 			});
-
-
-
-
-			/*
-            var KanbanTest = new jKanban({
-                element : '#' + this.id,
-                gutter  : '10px',
-                click : function(el){
-                    alert(el.innerHTML);
-                    alert(el.dataset.eid)
-                },
-                boards  :[
-                    {
-                        'id' : '_todo',
-                        'title'  : 'To Do (drag me)',
-                        'class' : 'info',
-                        'item'  : [
-                            {
-                                'id':'task-1',
-                                'title':'Try drag me',
-                            },
-                            {
-                                'id':'task-2',
-                                'title':'Click me!!',
-                            }
-                        ]
-                    },
-                    {
-                        'id' : '_working',
-                        'title'  : 'Working',
-                        'class' : 'warning',
-                        'item'  : [
-                            {
-                                'title':'Do Something!',
-                            },
-                            {
-                                'title':'Run?',
-                            }
-                        ]
-                    },
-                    {
-                        'id' : '_done',
-                        'dragTo' : ['_working'],
-                        'title'  : 'Done (Drag only in Working)',
-                        'class' : 'success',
-                        'item'  : [
-                            {
-                                'title':'All right',
-                            },
-                            {
-                                'title':'Ok!',
-                            }
-                        ]
-                    }
-                ]
-            });
-
-            */
-
-			/*var allEle = KanbanTest.getBoardElements('_todo');
-			allEle.forEach(function (item, index) {
-				console.log("ITEM: " + item);
-				console.log('BOARD: ' + $(item.parentElement.parentElement).data("id")); // board id)
-				console.log("INDEX: " + index);
-			})*/
-
-
-
-
 		},
 
 		onUnloaded : function() {
