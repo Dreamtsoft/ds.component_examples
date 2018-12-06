@@ -182,8 +182,10 @@ var dragula = require('dragula');
         };
 
         this.addBoards = function (boards) {
-            console.log('BOARDS: ' + JSON.stringify(boards));
-            console.log('BOARDS LENGTH: ' + boards.length);
+            //debugger;
+            //console.log('BOARDS: ' + JSON.stringify(boards));
+            //console.log('BOARDS TYPE: ' + typeof boards);
+            //console.log('BOARDS LENGTH: ' + boards.length);
             if (self.options.responsivePercentage) {
                 self.container.style.width = '100%';
                 self.options.gutter = '1%';
@@ -199,12 +201,16 @@ var dragula = require('dragula');
             var buttonContent = self.options.buttonContent;
 
             //for on all the boards
-            for (var boardkey in boards) {
-                console.log('BOARDKEY: ' + boardkey);
+            for (var xyz=0; xyz<boards.length; xyz++) {
+            //for (var boardkey in boards) {
+
+
+                //console.log('xyz: ' + xyz);
                 // single board
-                var board = boards[boardkey];
-                console.log('ADDING BOARD: ' + JSON.stringify(board));
-                self.options.boards.push(board);
+                //var board = boards[boardkey];
+                var board = boards[xyz];
+                //console.log('ADDING BOARD: ' + JSON.stringify(board));
+                //self.options.boards.push(board);
 
                 if (!self.options.responsivePercentage) {
                     //add width to container
@@ -343,8 +349,8 @@ var dragula = require('dragula');
             boardContainer.classList.add('kanban-container');
             self.container = boardContainer;
             //add boards
-            console.log('__setBoard BOARDS: ' + JSON.stringify(self.options.boards));
-            console.log('__setBoard BOARDS LENGTH: ' + self.options.boards.length);
+            //console.log('__setBoard BOARDS: ' + JSON.stringify(self.options.boards));
+            //console.log('__setBoard BOARDS LENGTH: ' + self.options.boards.length);
             self.addBoards(self.options.boards);
             //appends to container
             self.element.appendChild(self.container);

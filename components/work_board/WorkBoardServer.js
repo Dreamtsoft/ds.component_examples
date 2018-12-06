@@ -4,10 +4,11 @@ var KanbanBoardServer = PageComponent.create({
 	data: function(attributes, vars, containerList) {
 		var realJSON = [];
 		this.boards = [];
-		//var bucketName = this.getBucketName(attributes, vars, containerList);
-		//var parentRecord = this._getParentRecord(bucketName, vars);
-		//var parentRecordID = parentRecord.getIntId();
-		//var topLevelID = '0c205c3813654bc88c6b80451bc9a0b3';
+		this.condition = attributes.condition;
+        this.groupBy = attributes.group_by;
+        this.bucketName = attributes.bucket;
+
+        this._createBoards();
 
 		return new StatusResponse('good', {
 			boards: this.boards,
@@ -15,13 +16,30 @@ var KanbanBoardServer = PageComponent.create({
 	},
 
 	_createBoards: function() {
-		var i = new FRecord('incident');
-		i.search();
-		if (i.next()) {
-			i.state.getChoices();
-		}
+		//Find the group by values for the boards
+		var boardsObject = {};
+		var bc = new FRecord(this.bucketName);
+        if (this.condition) {
+            bc.addEncodedSearch(this.condition);
+        }
+		bc.search();
+		while (bc.next()) {
+            var boardValue = bc.getValue(this.groupBy);
+            console.log('BOARDVALUE: ' + boardValue);
+            var boardName = bc.getDisplayValue(this.groupBy);
+            if (boardsObject[boardValue] === undefined) {
+                boardsObject[boardValue] = boardName;
+            }
 
-		this.boards.push(this._createBoard());
+
+        }
+
+        //Now iterate through the values and create boards
+        for (var board in boardsObject) {
+            console.log(board + " - " + boardsObject[board]);
+            this.boards.push(this._createBoard(board, boardsObject[board]));
+
+        }
 	},
 
 	_createBoard: function(id, title) {
@@ -29,7 +47,7 @@ var KanbanBoardServer = PageComponent.create({
 		board.id = id;
 		board.title = title;
 		//board.class = "info";
-        board.dragTo = ['_working'];
+        //board.dragTo = ['_working'];
         var itemsArray = [];
         itemsArray.push(this._createItem());
 
@@ -101,27 +119,6 @@ var KanbanBoardServer = PageComponent.create({
             },
 		 */
 
-	},
-	
-	_getParentRecord: function(bucketName, vars) {
-		var query = vars.parms['q'];
-		var newRecord = Object.isTrue(vars.parms['new']);
-		
-		var record = new FRecord(bucketName);
-		record.setSecurityChecks(true);
-		
-		if (newRecord) {
-			record.newRecord();
-			
-			if (!Object.isNil(query))
-				record.setValues(query);
-		} else if (!Object.isNil(query)) {
-			record.addEncodedSearch(query);
-			record.search();
-			record.next();
-		}
-		
-		return record;
 	},
 	
 	type: "KanbanBoardServer"

@@ -3,11 +3,83 @@
 <definition> { id:"work_board", label:"Work Board",
 	className:"WorkBoardServer", renderable:"true" } </definition>
 
-<attributes> [] </attributes>
-
-<attributes_layout> [] </attributes_layout>
-
-<attributes_display_rules> [] </attributes_display_rules>
+<attributes>
+	[
+	{
+	"type": "choice",
+	"attributes": {
+	"buckets": true,
+	"none_option": true
+	},
+	"labels": {
+	"label": "Bucket",
+	"labelp": "Buckets"
+	},
+	"name": "bucket"
+	},
+	{
+	"type": "choice",
+	"attributes": {
+	"slots": true,
+	"bucket_slot": "bucket",
+	"none_option": true
+	},
+	"labels": {
+	"label": "Group by",
+	"labelp": "Group bies"
+	},
+	"name": "group_by"
+	},
+	{
+	"type": "condition",
+	"attributes": {
+	"bucket_slot": "bucket"
+	},
+	"labels": {
+	"label": "Condition",
+	"labelp": "Conditions"
+	},
+	"name": "condition"
+	}
+	]
+</attributes>
+<attributes_layout>
+	{
+	"version": 1,
+	"layout": [
+	{
+	"type": "section",
+	"colData": [
+	{
+	"column": 0
+	}
+	],
+	"cols": [
+	[
+	{
+	"type": "slot",
+	"name": "bucket"
+	},
+	{
+	"type": "slot",
+	"name": "condition"
+	},
+	{
+	"type": "slot",
+	"name": "group_by"
+	}
+	]
+	],
+	"guid": "1j82z3",
+	"columns": 1
+	}
+	],
+	"pageData": {}
+	}
+</attributes_layout>
+<attributes_display_rules>
+	[]
+</attributes_display_rules>
 
 <style>
 
@@ -37,7 +109,7 @@
 			var WorkBoard = new jKanban({
 				element: '#' + this.id,
 				gutter: '10px',
-				/*
+
 				click: function (el) {
 					console.log("Trigger on all items click!");
 				},
@@ -70,11 +142,13 @@
 					}
 				},
 
-				addItemButton: true,
-				dragBoards: true,
-				//boards: data.boards,
-				*/
 
+				dragBoards: true,
+				boards: data.boards,
+
+
+                addItemButton: true,
+/*
                 boards: [
                    {
                         "id": "_todo",
@@ -134,6 +208,7 @@
                         ]
                     }
                 ]
+                */
 
 
 			});
