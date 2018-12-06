@@ -26,7 +26,10 @@ var KanbanBoardServer = PageComponent.create({
 		while (bc.next()) {
             var boardValue = bc.getValue(this.groupBy);
             console.log('BOARDVALUE: ' + boardValue);
-            var boardName = bc.getDisplayValue(this.groupBy);
+            var boardName = "No Value";
+            if (!Object.isNil(boardValue)) {
+                var boardName = bc.getDisplayValue(this.groupBy);
+			}
             if (boardsObject[boardValue] === undefined) {
                 boardsObject[boardValue] = boardName;
             }
@@ -46,11 +49,20 @@ var KanbanBoardServer = PageComponent.create({
 		var board = {};
 		board.id = id;
 		board.title = title;
-		//board.class = "info";
+		board.class = "info";
         //board.dragTo = ['_working'];
-        var itemsArray = [];
-        itemsArray.push(this._createItem());
 
+		//Now go get the items
+        var itemsArray = [];
+        var ic = new FRecord(this.bucketName);
+        if (this.condition) {
+            ic.addEncodedSearch(this.condition);
+        }
+        ic.addSearch(this.groupBy, id);
+        ic.search();
+        while (ic.next()) {
+            itemsArray.push(this._createItem(ic.id, ic.getRecordDisplayValue() + ": " + ic.title));
+        }
 
         board.item = itemsArray;
 

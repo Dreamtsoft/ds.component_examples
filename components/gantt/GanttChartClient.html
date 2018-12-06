@@ -1,0 +1,681 @@
+<!DOCTYPE f8component>
+
+<definition>
+{
+	id: "gantt_chart",
+	label: "Gantt Chart",
+	className: "GanttChartServer",
+	renderable: true
+}
+</definition>
+
+<attributes>
+	[{
+         name:"bucket",
+         label:"Bucket",
+         type:"choice",
+         attributes:{
+            "choice_type":"dropdown",
+            "buckets":"true"
+         }
+      },
+      {
+         name:"condition",
+         label:"Condition",
+         type:"condition",
+         attributes:{
+            bucket_slot:"bucket",
+            "default": "%{pageVars.q}",
+            "mapping_enabled": true
+         }
+      },
+      {
+         name:"start_slot",
+         label:"Start slot",
+         type:"choice",
+         attributes:{
+            choice_type:"dropdown",
+            slots:true,
+            filter:"type:eq:date_time",
+            bucket_slot:"bucket"
+         }
+      },
+      {
+         name:"end_slot",
+         label:"End slot",
+         type:"choice",
+         attributes:{
+            choice_type:"dropdown",
+            slots:true,
+            bucket_slot:"bucket"
+         }
+      },
+      {
+         name:"title_slot",
+         label:"Title slot",
+         type:"choice",
+         attributes:{
+            choice_type:"dropdown",
+            slots:true,
+            bucket_slot:"bucket"
+         }
+      }
+   ]
+</attributes>
+
+<attributes_layout>
+[]
+</attributes_layout>
+
+<attributes_display_rules>
+[]
+</attributes_display_rules>
+
+<style>    
+    html, body{
+		height: 100%;
+        width: 100%;
+		padding: 0px;
+		margin: 0px;
+		overflow: hidden;
+	}
+	
+	.weekend {
+		background: #f4f7f4;
+	}
+	.gantt_selected .weekend{
+		background: #f7eb91;
+	}
+</style>
+
+<script>
+exports.component = ComponentUI.create({
+	onRender: function(container, data, attributes) {
+        var w = container.width();
+        var h = container.height() || 400;
+        this.id = 'uniqueGanttID' + Client.guid();
+        //container.append('<div style="text-align:center;"><input value="Indent" type="button" onclick=\'gantt.performAction("indent")\' style=\'margin:20px;\'><input value="Outdent" type="button" onclick=\'gantt.performAction("outdent")\' style=\'margin:20px;\'><input value="Delete" type="button" onclick=\'gantt.performAction("del")\' style=\'margin:20px;\'><input value="Move Forward" type="button" onclick=\'gantt.performAction("moveForward")\' style=\'margin:20px;\'><input value="Move Backward" type="button" onclick=\'gantt.performAction("moveBackward")\' style=\'margin:20px;\'><input value="Undo" type="button" onclick=\'gantt.undo()\' style=\'margin:20px;\'><input value="Redo" type="button" onclick=\'gantt.redo()\' style=\'margin:20px;\'><input value="Export to MSProject" type="button" onclick=\'gantt.exportToMSProject({skip_circular_links: false})\' style=\'margin:20px;\'><form id="mspImport" action="" method="POST" enctype="multipart/form-data"><input type="file" id="mspFile" name="file" accept=".mpp,.xml, text/xml, application/xml, application/vnd.ms-project, application/msproj, application/msproject, application/x-msproject, application/x-ms-project, application/x-dos_ms_project, application/mpp, zz-application/zz-winassoc-mpp"/><button id="mspImportBtn" type="button">Load from MPP</button></form></div>');
+        container.append('<div style="text-align:center;"><input value="Indent" type="button" onclick=\'gantt.performAction("indent")\' style=\'margin:20px;\'><input value="Outdent" type="button" onclick=\'gantt.performAction("outdent")\' style=\'margin:20px;\'><input value="Delete" type="button" onclick=\'gantt.performAction("del")\' style=\'margin:20px;\'><input value="Move Forward" type="button" onclick=\'gantt.performAction("moveForward")\' style=\'margin:20px;\'><input value="Move Backward" type="button" onclick=\'gantt.performAction("moveBackward")\' style=\'margin:20px;\'><input value="Undo" type="button" onclick=\'gantt.undo()\' style=\'margin:20px;\'><input value="Redo" type="button" onclick=\'gantt.redo()\' style=\'margin:20px;\'></div>');
+        container.append('<div id="' + this.id + '" style="height:800px;width:100%" </div>');
+        //container.find('#mspImportBtn').on('click', $.proxy(this.importProject, this));
+        //container.find('#zoomBtn').on('click', $.proxy(this.zoomToFit(), this));
+    },
+
+
+
+    importProject: function() {
+        alert('IMPORTING PROJECT!');
+        var fileInput = document.getElementById("mspFile");
+        var file = fileInput.files[0];
+
+        //Need to load the api functions to do this!
+        //https://export.dhtmlx.com/gantt/api.js?v=20180322
+        this.importFromMSProject({
+            data: file,
+            callback: function (project) {
+                if (project) {
+                    gantt.clearAll();
+
+                    if (project.config.duration_unit) {
+                        gantt.config.duration_unit = project.config.duration_unit;
+                    }
+
+                    gantt.parse(project.data);
+                }
+
+                //if (callback)
+                //    callback(project);
+            }
+        });
+    },
+
+    zoomToFit: function() {
+	    /*
+        var project = gantt.getSubtaskDates();
+        var areaWidth = gantt.$task.offsetWidth;
+
+        for (var i = 0; i < scaleConfigs.length; i++) {
+            var columnCount = getUnitsBetween(project.start_date, project.end_date, scaleConfigs[i].unit, scaleConfigs[i].step);
+            if ((columnCount + 2) * gantt.config.min_column_width <= areaWidth) {
+                break;
+            }
+        }
+
+        if (i == scaleConfigs.length) {
+            i--;
+        }
+
+        applyConfig(scaleConfigs[i], project);
+        gantt.render();
+        */
+    },
+
+    importFromMSProject: function(config){
+        var formData = config.data;
+
+        if(formData instanceof FormData){
+
+        }else if(formData instanceof File){
+            var data = new FormData();
+            data.append("file", formData);
+            config.data = data;
+        }
+        this.sendImportAjax(config);
+    },
+
+    sendImportAjax: function(config){
+        var url = config.server || "https://export.dhtmlx.com/gantt";
+        var store = config.store || 0;
+        var formData = config.data;
+        var callback = config.callback;
+
+        var settings = {};
+        if(config.durationUnit) settings.durationUnit = config.durationUnit
+        if(config.projectProperties) settings.projectProperties = config.projectProperties;
+        if(config.taskProperties) settings.taskProperties = config.taskProperties;
+
+        formData.append("type", "msproject-parse");
+        formData.append("data", JSON.stringify(settings));
+
+        if(store)
+            formData.append("store", store);
+
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function (e) {
+            if(xhr.readyState == 4 && xhr.status == 0){// network error
+                if(callback){
+                    callback(null);
+                }
+            }
+        };
+
+        xhr.onload = function() {
+
+            var fail = xhr.status > 400;
+            var info = null;
+
+            if (!fail){
+                try{
+                    info = JSON.parse(xhr.responseText);
+                }catch(e){}
+            }
+
+            if(callback){
+                callback(info);
+            }
+
+        };
+
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhr.send(formData);
+    },
+
+	onAfterLoad: function(dataFromServer) {			
+		var demoData = {
+		    data:[
+		        {id:2, text:"Task #1", start_date:"03-04-2013", duration:5, 
+		        progress: 1,   open: true, parent:1},
+		        {id:3, text:"Task #2",   start_date:"02-04-2013", duration:7, 
+		        progress: 0.5, open: true, parent:1},
+		        {id:4, text:"Task #2.1", start_date:"03-04-2013", duration:2, 
+		        progress: 1,   open: true, parent:3},
+		        {id:5, text:"Task #2.2", start_date:"04-04-2013", duration:3, 
+		        progress: 0.8, open: true, parent:3},
+		        {id:6, text:"Task #2.3", start_date:"05-04-2013", duration:4, 
+		        progress: 0.2, open: true, parent:9},
+		        {id:1, text:"Project #1",type: "gantt.config.types.project" ,start_date:"01-04-2013 12:00:00", duration:11,
+			        progress: 0.6, open: true},
+		        {id:9, text:"Project #2", type:"gantt.config.types.project", duration:4,start_date:"05-04-2013",
+			        progress: 0.6, open: true},
+		    ],
+		    links:[
+		        {id:1, source:1, target:2, type:"1"},
+		        {id:2, source:1, target:3, type:"1"},
+		        {id:3, source:3, target:4, type:"1"},
+		        {id:4, source:4, target:5, type:"0"},
+		        {id:5, source:5, target:6, type:"0"}
+		    ]
+		};
+
+        function shiftTask(task_id, direction) {
+            var task = gantt.getTask(task_id);
+            task.start_date = gantt.date.add(task.start_date, direction, "day");
+            task.end_date = gantt.calculateEndDate(task.start_date, task.duration);
+            gantt.updateTask(task.id);
+        }
+
+
+
+        var actions = {
+            "indent": function indent(task_id) {
+                var prev_id = gantt.getPrevSibling(task_id);
+                while (gantt.isSelectedTask(prev_id)) {
+                    var prev = gantt.getPrevSibling(prev_id);
+                    if (!prev) break;
+                    prev_id = prev;
+                }
+                if (prev_id) {
+                    var new_parent = gantt.getTask(prev_id);
+                    gantt.moveTask(task_id, gantt.getChildren(new_parent.id).length, new_parent.id);
+                    new_parent.type = gantt.config.types.project;
+                    new_parent.$open = true;
+                    gantt.updateTask(task_id);
+                    gantt.updateTask(new_parent.id);
+                    return task_id;
+                }
+                return null;
+            },
+            "outdent": function outdent(task_id, initialIndexes) {
+                var cur_task = gantt.getTask(task_id);
+                var old_parent = cur_task.parent;
+                if (gantt.isTaskExists(old_parent) && old_parent != gantt.config.root_id) {
+                    gantt.moveTask(task_id, gantt.getTaskIndex(old_parent) + 1 + initialIndexes[task_id], gantt.getParent(cur_task.parent));
+                    if (!gantt.hasChild(old_parent))
+                        gantt.getTask(old_parent).type = gantt.config.types.task;
+                    gantt.updateTask(task_id);
+                    gantt.updateTask(old_parent);
+                    return task_id;
+                }
+                return null;
+            },
+            "del": function (task_id) {
+                gantt.deleteTask(task_id);
+                return task_id;
+            },
+            "moveForward": function (task_id) {
+                shiftTask(task_id, 1);
+            },
+            "moveBackward": function (task_id) {
+                shiftTask(task_id, -1);
+            }
+        };
+        var cascadeAction = {
+            "indent": true,
+            "outdent": true,
+            "del": true
+        };
+
+        gantt.performAction = function (actionName) {
+            var action = actions[actionName];
+            if (!action)
+                return;
+
+
+            gantt.batchUpdate(function () {
+
+                // need to preserve order of items on indent/outdent,
+                // remember order before changing anything:
+                var indexes = {};
+                gantt.eachSelectedTask(function (task_id) {
+                    indexes[task_id] = gantt.getTaskIndex(task_id);
+                });
+
+                var updated = {};
+                gantt.eachSelectedTask(function (task_id) {
+
+                    if (cascadeAction[actionName]) {
+                        if (!updated[gantt.getParent(task_id)]) {
+                            var updated_id = action(task_id, indexes);
+
+                            updated[updated_id] = true;
+                        } else {
+                            updated[task_id] = true;
+                        }
+                    } else {
+                        action(task_id, indexes);
+                    }
+                });
+            });
+        };
+
+
+
+		
+		/*
+		console.log('DATA.TASKS - ' + dataFromServer.records);
+		for (var key in dataFromServer.records) {
+			 console.log(key, dataFromServer.records[key]);
+		}
+		
+		console.log('DATA.LINKS - ' + dataFromServer.links);
+		for (var key2 in dataFromServer.links) {
+			 console.log(key2, dataFromServer.links[key2]);
+		}
+		*/
+		
+		var realData = {
+		    data:dataFromServer.records,
+		    links:dataFromServer.links
+		};
+
+
+		//Handle weekend coloring
+		gantt.templates.scale_cell_class = function(date){
+            if(date.getDay()==0||date.getDay()==6){
+                return "weekend";
+            }
+        };
+        
+        gantt.templates.task_cell_class = function(item,date){
+            if(date.getDay()==0||date.getDay()==6){
+                return "weekend"
+            }
+        };
+
+		
+		//Handle critical path
+
+		gantt.templates.task_class = function(start, end, task){
+			if(gantt.isCriticalTask(task))
+				return "critical_task";
+			
+			return "";
+		};
+
+		gantt.templates.link_class = function(link){
+			if(gantt.isCriticalLink(link))
+		 		return "critical_link";
+			
+		 	return "";
+		};			
+
+					
+		//Configuration for the chart
+		gantt.config.highlight_critical_path = true;
+		//gantt.config.scale_unit = "month";
+		//gantt.config.touch = "force";
+		//gantt.config.step = 1;
+		//gantt.config.scale_unit = "month";
+		//gantt.config.date_scale = "%F, %Y";
+		//gantt.config.scale_height = 50;
+        gantt.config.auto_scheduling = true;
+        gantt.config.auto_scheduling_strict = true;
+
+
+		var date_to_str = gantt.date.date_to_str(gantt.config.task_date);
+		var today = new Date();
+		
+
+		var markerId = gantt.addMarker({
+		    start_date: new Date(), //a Date object that sets the marker's date
+		    css: "today", //a CSS class applied to the marker
+		    text: "Now", //the marker title
+		    title:date_to_str( new Date()) // the marker's tooltip
+		});
+
+
+		
+		gantt.config.scale_unit = "month";
+		gantt.config.date_scale = "%F, %Y";
+		gantt.config.scale_height = 50;
+		gantt.config.subscales = [
+			{unit:"day", step:1, date:"%j, %D" }
+		];
+		
+
+
+        //gantt.config.autosize = true;
+        gantt.config.autosize = "xy";
+        //gantt.config.fit_tasks = true;
+
+        /*
+
+        gantt.config.order_branch = true;
+        gantt.config.order_branch_free = true;
+        */
+
+
+
+
+
+
+		/*
+		gantt.config.subscales = [
+			{unit:"day", step:1, date:"%j, %D" }
+		];
+		*/
+
+		//Format the dates
+        /*
+        gantt.attachEvent("onTemplatesReady", function(){
+            gantt.templates.xml_date = function(dateString){
+                return new Date(dateString * 1000);
+            }
+        });
+        */
+
+
+		
+		//Initialize the chart
+		//gantt.init(this.id, new Date(2018, 01, 01), new Date(2018, 12, 31));
+        gantt.init(this.id);
+		//gantt.parse(demoData);
+		gantt.parse(realData);
+
+        /*
+        gantt.attachEvent("onTaskCreate", function(task) {
+            gantt.message("You've just created an task with id=" + task.id);
+        });
+
+
+		//Attach event handlers
+
+
+
+
+		gantt.attachEvent("onTaskClick", function(id, e) {
+		    gantt.message("You've just clicked an item with id="+id);
+		});
+		gantt.attachEvent("onAfterTaskDrag", function(id, mode){
+			var task = gantt.getTask(id);
+			if(mode == gantt.config.drag_mode.progress){
+				var pr = Math.floor(task.progress * 100 * 10)/10;
+				gantt.message(task.text + " is now " + pr + "% completed!");
+			}else{
+				var convert = gantt.date.date_to_str("%H:%i, %F %j");
+				var s = convert(task.start_date);
+				var e = convert(task.end_date);
+				gantt.message(task.text + " starts at " + s + " and ends at " + e);
+			}
+		});
+		gantt.attachEvent("onBeforeTaskChanged", function(id, mode, old_event){
+			var task = gantt.getTask(id);
+			if(mode == gantt.config.drag_mode.progress){
+				if(task.progress < old_event.progress){
+					gantt.message(task.text + " progress can't be undone!");
+					return false;
+				}
+			}
+			return true;
+		});
+
+		gantt.attachEvent("onBeforeTaskDrag", function(id, mode){
+			var task = gantt.getTask(id);
+			var message = task.text + " ";
+
+			if(mode == gantt.config.drag_mode.progress){
+				message += "progress is being updated";
+			}else{
+				message += "is being ";
+				if(mode == gantt.config.drag_mode.move)
+					message += "moved";
+				else if(mode == gantt.config.drag_mode.resize)
+					message += "resized";
+			}
+
+			gantt.message(message);
+			return true;
+		});
+		*/
+
+        gantt.attachEvent("onScaleAdjusted", function(){
+            alert('SCALE ADJUSTED');
+            var min = gantt.getState().min_date;
+            var max = gantt.getState().max_date;
+            var to_str = gantt.templates.task_date;
+
+            return dhtmlx.message("Scale shows days from " + to_str(min)
+                + " to " + to_str(max));
+        });
+
+
+        // assume that taskService/linkService are some kind of CRUD service implementation
+
+// tasks
+        gantt.attachEvent('onAfterTaskAdd', function(id, task) {
+
+            //var newTaskId = this._createNewTask(id, task);
+            console.log('NEW TASK - ' + id + ' - ' + task);
+            console.log('ID - ' + JSON.stringify(id));
+            console.log('TASK - ' + JSON.stringify(task));
+            //alert('NEW TASK - ' + id + ' - ' + task);
+            var isCriticalTask = gantt.isCriticalTask(gantt.getTask(id));// ->'true'
+            console.log('IS CRITICAL TASK - ' + isCriticalTask);
+
+            Server.rest('gantt_chart/ajax/createNewTask', {
+                oldId: id,
+                startDate: task.start_date,
+                duration: task.duration,
+                parent: task.parent,
+                type: task.type,
+                critical: isCriticalTask,
+                text: task.text
+
+                }, {
+                callback: $.proxy(function(response) {
+                    if (response && response.status == 'good') {
+                        if (response.status == 'bad') {
+                            Client.error("Unable to add task");
+                            return;
+                        }
+                        gantt.changeTaskId(response.data.newId, id);
+                    }
+                }, this)
+                }
+            );
+            //console.log('CREATING NEW TASK');
+            //console.log('ID - ' + id);
+            //console.log('Task - ' + JSON.stringify(task));
+            //gantt.changeTaskId(id, id);
+
+        });
+
+        gantt.attachEvent('onAfterTaskUpdate', function(id, task) {
+            console.log('MODIFYING TASK - ' + id + ' - ' + task);
+
+            var isCriticalTask = gantt.isCriticalTask(gantt.getTask(id));// ->'true'
+            console.log('IS CRITICAL TASK - ' + isCriticalTask);
+
+            //alert('MODIFYING TASK - ' + id + ' - ' + task);
+            Server.rest('gantt_chart/ajax/updateTask', {
+                    oldId: id,
+                    startDate: task.start_date,
+                    duration: task.duration,
+                    parent: task.parent,
+                    critical: isCriticalTask,
+                    type: task.type
+
+                }, {
+                    callback: $.proxy(function(response) {
+                        if (response && response.status == 'good') {
+                            if (response.status == 'bad') {
+                                Client.error("Unable to modify task");
+                                return;
+                            }
+                            //gantt.changeTaskId(response.data.newId, id);
+                        }
+                    }, this)
+                }
+            );
+        });
+
+        gantt.attachEvent('onAfterTaskDelete', function(id) {
+            //taskService.delete(id);
+            console.log('MODIFYING TASK - ' + id + ' - ' + task);
+            //alert('MODIFYING TASK - ' + id + ' - ' + task);
+            Server.rest('gantt_chart/ajax/deleteTask', {
+                    oldId: id
+                }, {
+                    callback: $.proxy(function(response) {
+                        if (response && response.status == 'good') {
+                            if (response.status == 'bad') {
+                                Client.error("Unable to delete task");
+                                return;
+                            }
+                            //gantt.changeTaskId(response.data.newId, id);
+                        }
+                    }, this)
+                }
+            );
+        });
+
+// links
+        gantt.attachEvent('onAfterLinkAdd', function(id, link) {
+            console.log('LINK - ' + JSON.stringify(link));
+            console.log('SOURCE - ' + link.source);
+            console.log('TARGET - ' + link.target);
+            //alert('NEW TASK - ' + id + ' - ' + task);
+            Server.rest('gantt_chart/ajax/createNewLink', {
+                    oldId: id,
+                    source: link.source,
+                    target: link.target,
+                    type: link.type
+
+                }, {
+                    callback: $.proxy(function(response) {
+                        if (response && response.status == 'good') {
+                            if (response.status == 'bad') {
+                                Client.error("Unable to add task");
+                                return;
+                            }
+                            gantt.changeLinkId(response.data.newId, id);
+                        }
+                    }, this)
+                }
+            );
+
+            //linkService.create(link)
+            //    .then(function(result){
+            //        gantt.changeLinkId(id, result.databaseId);
+            //    });
+        });
+
+        gantt.attachEvent('onAfterLinkUpdate', function(id, link) {
+            //linkService.update(task);
+        });
+
+        gantt.attachEvent('onAfterLinkDelete', function(id, link) {
+            linkService.delete(id);
+        });
+
+	},
+
+
+/*
+    createNewTask: function(msg, callbackFunction) {
+        Server.rest('gantt/ajax/createNewTask', {
+                parentBucket: this.parentBucket,
+                parentId: this.parentId,
+                newestSpeakCreated: this.loadedSpeaks.length == 0? "-1" : this._getNewestSpeak().created,
+                msg: msg
+            }, {
+                hideLoading: true,
+                callback: callbackFunction
+            }
+        );
+    },
+
+    */
+
+
+
+    _createNewTask: function(id, task) {
+        console.log('CREATING NEW TASK');
+        console.log('ID - ' + id);
+        console.log('Task - ' + JSON.stringify(task));
+    },
+
+	className: "GanttChartClient"
+});
+</script>

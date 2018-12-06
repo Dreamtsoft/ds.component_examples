@@ -1,0 +1,206 @@
+{
+  "bucket_data": {
+    "pages": {
+      "992ba1364ae744cba84e2e51c8c8b543": {
+        "created": "1544123125427",
+        "id": "992ba1364ae744cba84e2e51c8c8b543",
+        "layout": {
+          "__start__": {
+            "contains": [
+              "component_85573ac5c0ca5f19c16a12d3b25ac8e4"
+            ],
+            "h": "100%",
+            "icon": "",
+            "id": "__start__",
+            "label": "Gantt",
+            "layout_type": "page_components",
+            "subContainers": [
+              "container_7c24194e8d1cfc9622de67808ae227c1"
+            ],
+            "type": "container",
+            "w": "100%"
+          },
+          "component_5563adee4ed3af2ac1161563144ec029": {
+            "attributes": {
+              "__raw": {
+                "query": "%{pageVars.q}"
+              },
+              "bucket": "sgnz6v1l",
+              "component": "details",
+              "csstags": "",
+              "id": "b4fcaa8d6390d5a70e2cac13b4e426f9",
+              "include_actions": "true",
+              "layout": {
+                "layout": {
+                  "layout": [
+                    {
+                      "colData": [
+                        {
+                          "column": 0
+                        }
+                      ],
+                      "cols": [
+                        [
+                          {
+                            "name": "name",
+                            "type": "slot"
+                          },
+                          {
+                            "name": "start_date",
+                            "type": "slot"
+                          },
+                          {
+                            "name": "end_date",
+                            "type": "slot"
+                          }
+                        ]
+                      ],
+                      "columns": 1,
+                      "guid": "hj2s31",
+                      "type": "section"
+                    }
+                  ],
+                  "pageData": { },
+                  "version": 1
+                }
+              },
+              "new_record": "false",
+              "new_record_values": "[]",
+              "query": "%{pageVars.q}",
+              "read_only": "false"
+            },
+            "component": "details",
+            "h": "50%",
+            "id": "component_5563adee4ed3af2ac1161563144ec029",
+            "name": "component_5563adee4ed3af2ac1161563144ec029",
+            "needs_subpage_target": false,
+            "page_loading": false,
+            "type": "component",
+            "w": "100%"
+          },
+          "component_82f90b59ccbef955902a0a091cec6160": {
+            "attributes": {
+              "__raw": {
+                "parent_query": "%{pageVars.q}"
+              },
+              "component": "related",
+              "csstags": "",
+              "parent_query": "%{pageVars.q}",
+              "related": [
+                {
+                  "label": "IT Initiative work (it_initiative)",
+                  "value": "mk1jdw25.it_initiative"
+                }
+              ]
+            },
+            "component": "related",
+            "h": "50%",
+            "id": "component_82f90b59ccbef955902a0a091cec6160",
+            "name": "component_82f90b59ccbef955902a0a091cec6160",
+            "needs_subpage_target": false,
+            "page_loading": false,
+            "type": "component",
+            "w": "100%"
+          },
+          "component_85573ac5c0ca5f19c16a12d3b25ac8e4": {
+            "attributes": {
+              "__raw": {
+                "condition": "[[\"id\",\"eq\",\"%{pageVars.id}\"]]"
+              },
+              "bucket": "sgnz6v1l",
+              "component": "gantt_chart",
+              "condition": "[[\"id\",\"eq\",\"%{pageVars.id}\"]]",
+              "csstags": "",
+              "end_slot": "end_date",
+              "start_slot": "start_date",
+              "title_slot": "name"
+            },
+            "component": "gantt_chart",
+            "h": "100%",
+            "id": "component_85573ac5c0ca5f19c16a12d3b25ac8e4",
+            "name": "component_85573ac5c0ca5f19c16a12d3b25ac8e4",
+            "needs_subpage_target": false,
+            "page_loading": false,
+            "type": "component",
+            "w": "100%"
+          },
+          "container_7c24194e8d1cfc9622de67808ae227c1": {
+            "contains": [
+              "component_5563adee4ed3af2ac1161563144ec029",
+              "component_82f90b59ccbef955902a0a091cec6160"
+            ],
+            "id": "container_7c24194e8d1cfc9622de67808ae227c1",
+            "label": "Details",
+            "subContainer": true,
+            "type": "container"
+          }
+        },
+        "meta_classification": "",
+        "meta_schema": "",
+        "name": "details.default.it_initiative",
+        "owner": "__SYSTEM_USER__",
+        "page_vars": {
+          "layout": {
+            "layout": [
+              {
+                "colData": [ ],
+                "cols": [
+                  [
+                    {
+                      "name": "q",
+                      "type": "slot"
+                    },
+                    {
+                      "name": "bucket",
+                      "type": "slot"
+                    },
+                    {
+                      "name": "id",
+                      "type": "slot"
+                    }
+                  ]
+                ],
+                "type": "section"
+              }
+            ],
+            "version": 1
+          },
+          "slots": {
+            "bucket": {
+              "attributes": { },
+              "labels": {
+                "label": "Bucket",
+                "labelp": "Buckets"
+              },
+              "name": "bucket",
+              "type": "string"
+            },
+            "id": {
+              "attributes": { },
+              "labels": {
+                "label": "Id",
+                "labelp": "Ids"
+              },
+              "name": "id",
+              "type": "string"
+            },
+            "q": {
+              "attributes": { },
+              "labels": {
+                "label": "Query",
+                "labelp": "Queries"
+              },
+              "name": "q",
+              "type": "string"
+            }
+          }
+        },
+        "public": "0",
+        "relationships": "",
+        "schema_version": "0",
+        "system_updated": "0",
+        "title": ""
+      }
+    }
+  }
+}

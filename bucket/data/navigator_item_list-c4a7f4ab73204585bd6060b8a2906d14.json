@@ -1,0 +1,27 @@
+{
+  "bucket_data": {
+    "navigator_item_list": {
+      "c4a7f4ab73204585bd6060b8a2906d14": {
+        "bucket": "sgnz6v1l",
+        "color": "",
+        "condition": [ ],
+        "created": "1544122977716",
+        "icon": "fontawesome:align-left",
+        "id": "c4a7f4ab73204585bd6060b8a2906d14",
+        "label": "Gantt Chart",
+        "meta_classification": "",
+        "meta_schema": "",
+        "order": "2",
+        "owner": "__SYSTEM_USER__",
+        "parent": "7535a9d1bc7c4b3cb296628be4f611de",
+        "relationships": "",
+        "schema_version": "0",
+        "sort_by": "",
+        "sort_direction": "ascending",
+        "subpage": "",
+        "system_updated": "0",
+        "view": ""
+      }
+    }
+  }
+}

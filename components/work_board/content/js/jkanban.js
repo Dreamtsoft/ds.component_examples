@@ -264,9 +264,11 @@ var dragula = require('dragula');
                 });
                 //add drag to array for dragula
                 self.boardContainer.push(contentBoard);
-                for (var itemkey in board.item) {
+                for (var xyz2=0; xyz2<board.item.length; xyz2++) {
+                //for (var itemkey in board.item) {
                     //create item
-                    var itemKanban = board.item[itemkey];
+                    //var itemKanban = board.item[itemkey];
+                    var itemKanban = board.item[xyz2];
                     var nodeItem = document.createElement('div');
                     nodeItem.classList.add('kanban-item');
                     nodeItem.dataset.eid = itemKanban.id;
