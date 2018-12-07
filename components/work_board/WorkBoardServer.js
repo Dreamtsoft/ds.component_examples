@@ -1,7 +1,8 @@
 var PageComponent = require('ds.base/PageComponent');
 
-var KanbanBoardServer = PageComponent.create({
+var WorkBoardServer = PageComponent.create({
 	data: function(attributes, vars, containerList) {
+	    console.log("TESTING!!!");
 		var realJSON = [];
 		this.boards = [];
 		this.condition = attributes.condition;
@@ -25,7 +26,7 @@ var KanbanBoardServer = PageComponent.create({
 		var choices = JSON.stringify(sd.attributes.choices);
 		console.log('SLOT DEFINITION' + JSON.stringify(sd));
 		console.log("NONE OPTION "+ sd.attributes.none_option);
-		if (sd.type == 'choice') {
+		if (sd.type == 'choice' && Object.isNil(sd.attributes.bucket_name)) {
 			if(none_opt === true){
 			boardsObject[0] = "No Value";
 			}
@@ -153,7 +154,27 @@ var KanbanBoardServer = PageComponent.create({
 		 */
 	},
 
-	type: 'KanbanBoardServer'
+    ajax_updateRecord: function(vars) {
+	    console.log('AJAX UPDATING RECORD: ' + JSON.stringify(vars));
+        var recordId = vars.id;
+        var recordBucket = vars.bucket;
+        var newValue = vars.newValue;
+        var groupBy = vars.groupBy;
+
+        //Update the record
+        var r = new FRecord(recordBucket);
+        r.getRecord(recordId);
+        r[groupBy] = newValue;
+        r.update();
+
+        var returnObject = {};
+
+        return new StatusResponse('good', {
+            returnObject: returnObject
+        });
+    },
+	
+	type: "WorkBoardServer"
 });
 
-module.exports = KanbanBoardServer;
+module.exports = WorkBoardServer;

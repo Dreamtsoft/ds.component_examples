@@ -114,13 +114,46 @@
 					console.log("Trigger on all items click!");
 				},
 				dropEl: function (el, target, source, sibling) {
+				    console.log('el: ' + JSON.stringify(el));
+                    console.log('el.dataset: ' + JSON.stringify(el.dataset));
+
+                    console.log('target: ' + JSON.stringify(target));
+                    console.log('source: ' + JSON.stringify(source));
+                    //console.log('sibling: ' + JSON.stringify(sibling));
 					console.log('DROPPED: ' + el.dataset.eid);
 					console.log('DROPPED 2: ' + $(el).data("eid"));
 					console.log('TARGET: ' + $(target.parentElement).data("id"));
 					console.log('SOURCE: ' + $(source.parentElement).data("id"));
-					console.log('SIBLING: ' + $(sibling.parentElement).data("id"));
-					console.log('BOARD: ' + $(el.parentElement.parentElement).data("id"))
+					//console.log('SIBLING: ' + $(sibling.parentElement).data("id"));
+					console.log('BOARD: ' + $(el.parentElement.parentElement).data("id"));
+
+                    Server.rest('work_board/ajax/updateRecord', {
+                            id: el.dataset.eid,
+							bucket: attributes.bucket,
+							groupBy: attributes.group_by,
+                            newValue: $(target.parentElement).data("id")
+                        }, {
+                            callback: $.proxy(this.modificationDone, this)
+                        }
+                    );
 				},
+
+                modificationDone: function(response) {
+                    if (response.status == 'bad') {
+                        Client.error("Unable to modify record");
+                        return;
+                    }
+
+                    var returnObject = response.data.returnObject;
+
+                    if (!returnObject) {
+                        alert('No returnObject found');
+                        return;
+                    }
+
+                    //this.reload();
+                },
+
 				buttonClick: function (el, boardId) {
 					console.log(el);
 					console.log(boardId);

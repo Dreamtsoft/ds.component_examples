@@ -19,9 +19,9 @@
             "attributes": {
               "bucket": "srqk6j6s",
               "component": "work_board",
-              "condition": "[[\"status\",\"ne\",\"015074dda1d44b7ab07d02b161a22569\"]]",
+              "condition": "[]",
               "csstags": "",
-              "group_by": "priority",
+              "group_by": "status",
               "id": "0a7b71fe49ab0a6fa8cb2b4b24e6ef01"
             },
             "component": "work_board",
