@@ -1,17 +1,17 @@
 {
   "bucket_data": {
     "navigator_item_list": {
-      "c4a7f4ab73204585bd6060b8a2906d14": {
-        "bucket": "sgnz6v1l",
-        "color": "#29c732",
+      "b5bd90d7a4674f79a90943f3890c1652": {
+        "bucket": "srqk6j6s",
+        "color": "#fc2125",
         "condition": [ ],
-        "created": "1544122977716",
-        "icon": "fontawesome:clock-o",
-        "id": "c4a7f4ab73204585bd6060b8a2906d14",
-        "label": "Gantt Chart",
+        "created": "1544655518057",
+        "icon": "fontawesome:align-left",
+        "id": "b5bd90d7a4674f79a90943f3890c1652",
+        "label": "SLA Timeline",
         "meta_classification": "",
         "meta_schema": "",
-        "order": "2",
+        "order": "3",
         "owner": "__SYSTEM_USER__",
         "parent": "7535a9d1bc7c4b3cb296628be4f611de",
         "relationships": "",

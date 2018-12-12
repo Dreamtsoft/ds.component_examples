@@ -1,13 +1,14 @@
 {
   "bucket_data": {
     "pages": {
-      "44908f2fe5b0477c825d1f8b9ec36b16": {
-        "created": "1544035382672",
-        "id": "44908f2fe5b0477c825d1f8b9ec36b16",
+      "2c681a1c64b54cf2a9a8099a0d67857c": {
+        "created": "1544657703970",
+        "id": "2c681a1c64b54cf2a9a8099a0d67857c",
         "layout": {
           "__start__": {
             "contains": [
-              "component_6389a578d287e0cde04fcb211148388c"
+              "component_4de502909e7deb7455aac01174cfd7d6",
+              "component_90149531a8b10b19c9271bcfc4495504"
             ],
             "h": "100%",
             "id": "__start__",
@@ -15,34 +16,38 @@
             "type": "container",
             "w": "100%"
           },
-          "component_6389a578d287e0cde04fcb211148388c": {
+          "component_4de502909e7deb7455aac01174cfd7d6": {
             "attributes": {
-              "bucket": "mvy9xvby",
-              "component": "calendar",
-              "condition": "[[\"planned_start_date\",\"ne\",\"\"]]",
-              "csstags": "",
-              "end_slot": "planned_end_date",
-              "id": "b939eecf1ddd4b6c5c3d83cabd17686e",
-              "initial_view": "agendaWeek",
-              "resource_slot": "",
-              "show_unscheduled_events": true,
-              "start_slot": "planned_start_date",
-              "title_slot": "title",
-              "unscheduled_event_condition": "[[\"planned_start_date\",\"eq\",\"\"]]"
+              "component": "sla_timeline",
+              "csstags": ""
             },
-            "component": "calendar",
-            "h": "100%",
-            "id": "component_6389a578d287e0cde04fcb211148388c",
-            "name": "component_6389a578d287e0cde04fcb211148388c",
+            "component": "sla_timeline",
+            "h": "50%",
+            "id": "component_4de502909e7deb7455aac01174cfd7d6",
+            "name": "component_4de502909e7deb7455aac01174cfd7d6",
             "needs_subpage_target": false,
             "page_loading": false,
+            "type": "component",
+            "w": "100%"
+          },
+          "component_90149531a8b10b19c9271bcfc4495504": {
+            "attributes": {
+              "bucket": "srqk6j6s",
+              "include_actions": "1",
+              "view": "default"
+            },
+            "component": "details",
+            "h": "50%",
+            "id": "component_90149531a8b10b19c9271bcfc4495504",
+            "name": "component_90149531a8b10b19c9271bcfc4495504",
+            "needs_subpage_target": false,
             "type": "component",
             "w": "100%"
           }
         },
         "meta_classification": "",
         "meta_schema": "",
-        "name": "calendar",
+        "name": "details.default.incident",
         "owner": "__SYSTEM_USER__",
         "page_vars": {
           "layout": {

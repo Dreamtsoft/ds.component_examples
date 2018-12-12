@@ -1,0 +1,154 @@
+<!DOCTYPE f8component>
+
+<definition> { id:"sla_timeline", label:"SLA Timeline",
+className:"SLATimelineServer", renderable:"true" } </definition>
+
+<attributes> [] </attributes>
+
+<attributes_layout> [] </attributes_layout>
+
+<attributes_display_rules> [] </attributes_display_rules>
+
+<style>
+
+    .progress-label {
+        float: left;
+        margin-right: 1em;
+    }
+
+    .bar-row{
+        align-items:center;
+    }
+
+    div.progress{
+        margin:4px;
+        position: relative;
+    }
+
+    .progress span {
+        position: absolute;
+        display: block;
+        width: 100%;
+        color: black;
+    }
+
+    .progress-bar-purple {
+        background-color: purple !important;
+    }
+
+    .progress-bar-green {
+        background-color: #28a745 !important;
+    }
+
+    .progress-bar-orange {
+        background-color: orange !important;
+    }
+
+    .progress-bar-red {
+        background-color: #dc3545 !important;
+    }
+
+    .progress-bar-blue {
+        background-color: #007bff !important;
+    }
+
+    .progress-bar-yellow {
+        background-color: #ffc107 !important;
+    }
+
+
+</style>
+
+<script>
+	exports.component = ComponentUI.create({
+		onRender : function(container, data, attributes) {
+			var w = container.width();
+			var h = container.height() || 400;
+			this.id = 'uniqueSLATimelineID' + Client.guid();
+			var primaryDiv = $('<div class="containerWrapperBody" id="' + this.id + '"></div>');
+
+
+			container.append(primaryDiv);
+
+            var barsContainer = $('<div class="text-center"></div>');
+            primaryDiv.append(barsContainer);
+
+            for (let i=0; i< data.data.slaArray.length; i++) {
+
+                var slaObject = data.data.slaArray[i];
+                console.log('SLA: ' + JSON.stringify(slaObject));
+                var elapsedPercentage = slaObject.elapsedPercentage;
+                var status = slaObject.status;
+                var breached = slaObject.breached;
+
+                var color = "blue";
+                if (status == "completed") {
+                    //Completed...Check to see if its breached or not
+                    elapsedPercentage = 100;
+                    if (Object.isTrue(breached)) {
+                        color = "red";
+                    } else {
+                        color = "green";
+                    }
+                } else if (status == "paused") {
+                    color = "yellow";
+                    elapsedPercentage = 100;
+                } else if (status == "cancelled") {
+                    color = "blue";
+                    elapsedPercentage = 100;
+                } else {
+                    //Still working
+                    if (elapsedPercentage > 100) {
+                        color = "red";
+                    } else if (elapsedPercentage > 70) {
+                        color = "orange";
+                    } else if (elapsedPercentage > 65) {
+                        //color = "yellow";
+                    }
+                }
+
+
+                var timeLeftString = slaObject.timeLeftString;
+                //var name = slaObject.name + " - " + elapsedPercentage + "%";
+                var name = slaObject.name + " - " + timeLeftString + " remaining !";
+
+                //Change the name if the SLA is done
+                if (status == "completed") {
+                    if (Object.isTrue(breached)) {
+                        name = slaObject.name + " - Breached";
+                    } else {
+                        name = slaObject.name + " - Completed Successfully";
+                    }
+                } else if (status == "paused") {
+                     name = slaObject.name + " - Paused";
+
+                } else if (status == "cancelled") {
+                    name = slaObject.name + " - Cancelled";
+
+                }
+
+                var width = elapsedPercentage;
+                if (width > 100) {
+                    width = 100;
+                }
+
+                //Create row
+                var barRow = $('<div class="bar-row"></div>');
+                barsContainer.append(barRow);
+
+                //Create bar
+                var bar = $('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-' + color + '" role="progressbar" style="width: ' + width + '%" aria-valuenow="' + elapsedPercentage + '" aria-valuemin="0" aria-valuemax="100"></div><span><b>' + name + '</b></span></div>');
+                if (status == "active") {
+                    bar.addClass("active");
+                }
+                barRow.append(bar);
+            }
+		},
+
+		onUnloaded : function() {
+
+		},
+
+		className : "SLATimelineClient"
+	});
+</script>

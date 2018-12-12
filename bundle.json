@@ -3,6 +3,10 @@
    "bundle_name": "component_examples",
    "dependencies": [
       {
+         "id": "ds.it4it",
+         "version": "0.1.0"
+      },
+      {
          "id": "ds.base",
          "version": "0.1.0"
       }
