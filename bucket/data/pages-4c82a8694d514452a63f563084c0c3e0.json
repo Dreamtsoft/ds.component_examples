@@ -1,0 +1,105 @@
+{
+  "bucket_data": {
+    "pages": {
+      "4c82a8694d514452a63f563084c0c3e0": {
+        "created": "1544827816156",
+        "id": "4c82a8694d514452a63f563084c0c3e0",
+        "layout": {
+          "__start__": {
+            "contains": [
+              "component_f592d57a28a660e3014b10c8ea0b543c"
+            ],
+            "h": "100%",
+            "id": "__start__",
+            "layout_type": "page_components",
+            "type": "container",
+            "w": "100%"
+          },
+          "component_f592d57a28a660e3014b10c8ea0b543c": {
+            "attributes": {
+              "component": "google_map",
+              "csstags": "",
+              "geolocate": false,
+              "google_maps_api_key": "AIzaSyAjndqggpCBrJw_n-UKmkz_7z5Ft3Used0",
+              "id": "87d875a9bfe8fcabb6945f49928be5a4",
+              "starting_address": "270 neptune ave encinitas"
+            },
+            "component": "google_map",
+            "h": "100%",
+            "id": "component_f592d57a28a660e3014b10c8ea0b543c",
+            "name": "component_f592d57a28a660e3014b10c8ea0b543c",
+            "needs_subpage_target": false,
+            "page_loading": false,
+            "type": "component",
+            "w": "100%"
+          }
+        },
+        "meta_classification": "",
+        "meta_schema": "",
+        "name": "google_map",
+        "owner": "__SYSTEM_USER__",
+        "page_vars": {
+          "layout": {
+            "layout": [
+              {
+                "colData": [ ],
+                "cols": [
+                  [
+                    {
+                      "name": "q",
+                      "type": "slot"
+                    },
+                    {
+                      "name": "bucket",
+                      "type": "slot"
+                    },
+                    {
+                      "name": "id",
+                      "type": "slot"
+                    }
+                  ]
+                ],
+                "type": "section"
+              }
+            ],
+            "version": 1
+          },
+          "slots": {
+            "bucket": {
+              "attributes": { },
+              "labels": {
+                "label": "Bucket",
+                "labelp": "Buckets"
+              },
+              "name": "bucket",
+              "type": "string"
+            },
+            "id": {
+              "attributes": { },
+              "labels": {
+                "label": "Id",
+                "labelp": "Ids"
+              },
+              "name": "id",
+              "type": "string"
+            },
+            "q": {
+              "attributes": { },
+              "labels": {
+                "label": "Query",
+                "labelp": "Queries"
+              },
+              "name": "q",
+              "type": "string"
+            }
+          }
+        },
+        "public": "0",
+        "relationships": "",
+        "schema_version": "0",
+        "system_updated": "0",
+        "title": "Google Map"
+      }
+    }
+  }
+}

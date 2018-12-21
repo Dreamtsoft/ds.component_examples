@@ -1,0 +1,22 @@
+{
+  "bucket_data": {
+    "navigator_item_url": {
+      "6795c2ffd2a84f4da40313184a9f81b3": {
+        "color": "#9d33d6",
+        "created": "1544827800128",
+        "icon": "fontawesome:map-marker",
+        "id": "6795c2ffd2a84f4da40313184a9f81b3",
+        "label": "Google Map",
+        "meta_classification": "",
+        "meta_schema": "",
+        "order": "4",
+        "owner": "__SYSTEM_USER__",
+        "parent": "7535a9d1bc7c4b3cb296628be4f611de",
+        "relationships": "",
+        "schema_version": "0",
+        "system_updated": "0",
+        "url": "google_map"
+      }
+    }
+  }
+}
