@@ -6,6 +6,7 @@
         "color": "#29c732",
         "condition": [ ],
         "created": "1544122977716",
+        "description": "Plan out complex sequencing of work, project plans, resource assignment, etc.",
         "icon": "fontawesome:clock-o",
         "id": "c4a7f4ab73204585bd6060b8a2906d14",
         "label": "Gantt Chart",

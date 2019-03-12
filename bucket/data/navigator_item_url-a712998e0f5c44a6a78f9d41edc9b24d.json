@@ -4,6 +4,7 @@
       "a712998e0f5c44a6a78f9d41edc9b24d": {
         "color": "#fd8208",
         "created": "1544033980906",
+        "description": "Drag and drop work between states, assignment groups, etc.",
         "icon": "fontawesome:list",
         "id": "a712998e0f5c44a6a78f9d41edc9b24d",
         "label": "Work Board",

@@ -4,6 +4,7 @@
       "6795c2ffd2a84f4da40313184a9f81b3": {
         "color": "#9d33d6",
         "created": "1544827800128",
+        "description": "Map addresses, locations, work, dispatch points, vehicles, etc.",
         "icon": "fontawesome:map-marker",
         "id": "6795c2ffd2a84f4da40313184a9f81b3",
         "label": "Google Map",

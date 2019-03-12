@@ -6,6 +6,7 @@
         "color": "#fc2125",
         "condition": [ ],
         "created": "1544655518057",
+        "description": "Visualize the status of multiple running SLAs in horizontal progress bars",
         "icon": "fontawesome:align-left",
         "id": "b5bd90d7a4674f79a90943f3890c1652",
         "label": "SLA Timeline",

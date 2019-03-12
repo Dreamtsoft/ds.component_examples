@@ -17,11 +17,11 @@
           },
           "component_f02816f34f22b4078f7185909376a27b": {
             "attributes": {
-              "bucket": "srqk6j6s",
+              "bucket": "mk1jdw25",
               "component": "work_board",
               "condition": "[]",
               "csstags": "",
-              "group_by": "status",
+              "group_by": "sprint",
               "id": "0a7b71fe49ab0a6fa8cb2b4b24e6ef01"
             },
             "component": "work_board",

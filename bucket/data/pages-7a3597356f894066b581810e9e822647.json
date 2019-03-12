@@ -27,7 +27,7 @@
               "menu_width": 300,
               "name": "",
               "navigator": "7535a9d1bc7c4b3cb296628be4f611de",
-              "type": "circles"
+              "type": "tiles"
             },
             "component": "navigator",
             "h": "100%",
