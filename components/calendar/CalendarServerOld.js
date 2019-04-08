@@ -2,7 +2,7 @@
 // calendar component class
 //
 
-var CalendarServer = ServerComponent.create({
+var CalendarServerOld = ServerComponent.create({
 	data: function(attributes, vars) {
 		//Set variables
 		//console.log("DRS URL " + Configuration.getSiteURL() + "/ds.crm/home/details.default.sales_activity?q=%5b\"id\",\"eq\",\"" + "6b43d5f5a978496dabafc5097f14f94e\"");
@@ -186,7 +186,7 @@ var CalendarServer = ServerComponent.create({
 		});
 	},
 	
-	className: "CalendarServer"
+	className: "CalendarServerOld"
 });
 
-module.exports = CalendarServer;
+module.exports = CalendarServerOld;
